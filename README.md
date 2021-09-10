@@ -1,2 +1,2 @@
 # atlassianplayground
-THis is how you get comments from jira tickets using REST API
+Atlassian playground is where S71T happens for developing scripts to clone tickets from an internal server to the Atlassian cloud. 
