@@ -40,10 +40,11 @@ if debug:
 
 
 #issues(['Assignee','Reporter','Creator','Watchers']).str.replace(r'([a-z]*\.[a-z]*)', r'\1@torc\.ai')
-name_columns = ['Assignee', 'Reporter', 'Creator', 'Watchers_1', 'Watchers_2', 'Watchers_3', 'Watchers_4', 'Watchers_5']
+name_columns = ['Assignee', 'Reporter', 'Creator', 'Watchers', 'Watchers1', 'Watchers2', 'Watchers3', 'Watchers4']
 issues[name_columns] = issues[name_columns].replace(to_replace =r'([a-z]*.*[a-z]*)', value=r'\1@torc.ai', regex=True)
-comment_columns = ['Comment_1', 'Comment_2', 'Comment_3', 'Comment_4', 'Comment_5', 'Comment_6', 'Comment_7', 'Comment_8', 'Comment_9', 'Comment_10', 'Comments_11']
+comment_columns = ['Comment', 'Comment1', 'Comment2', 'Comment3', 'Comment4', 'Comment5', 'Comment6', 'Comment7', 'Comment8', 'Comment9', 'Comment10']
 issues[comment_columns] = issues[comment_columns].replace(to_replace=r';([a-z]*.*[a-z]*);', value=r';\1@torc.ai;', regex=True)
+
 
 if debug:
     print(issues.Comment)
