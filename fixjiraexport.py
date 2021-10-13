@@ -22,27 +22,23 @@ outfile = "updatedtickets.csv"
 #print(mytmpfile)
 
 # Summary,Issue key,Status,Priority,Assignee,Reporter,Creator,Created,Updated,Last Viewed,Description,Watchers,Watchers1,Watchers2,Watchers3,Watchers4,Custom field (ITSM Issue Type),Custom field (Request Type),Comment,Comment1,Comment2,Comment3,Comment4,Comment5,Comment6,Comment7,Comment8,Comment9,Comment10
-
-# Rename Watchers and Comments Columns
-count = 1
-for column in df.columns:
-    if column == 'Watchers':
-        cols.append(f'Watchers_{count}')
-        count+=1
-        continue
-    cols.append(column)
-pd.columns = cols
-# Rename Comments
-count = 1
-for column in df.columns:
-    if column == 'Comment':
-        cols.append(f'Comment_{count}')
-        count+=1
-        continue
-    cols.append(column)
-pd.columns = cols
-
 issues = pd.read_csv(myfile, index_col=0)
+
+# Rename Watchers and Comment Columns
+cols=pd.Series(issues.columns)
+for dup in issues.columns[issues.columns.duplicated(keep=False)]:
+    cols[issues.columns.get_loc(dup)] = ([dup + '_' + str(d_idx)
+                                     if d_idx != 0
+                                     else dup
+                                     for d_idx in range(issues.columns.get_loc(dup).sum())]
+                                    )
+issues.columns=cols
+
+if debug:
+    mycolumns = list(issues)
+    print (mycolumns)
+
+
 #issues(['Assignee','Reporter','Creator','Watchers']).str.replace(r'([a-z]*\.[a-z]*)', r'\1@torc\.ai')
 name_columns = ['Assignee', 'Reporter', 'Creator', 'Watchers_1', 'Watchers_2', 'Watchers_3', 'Watchers_4', 'Watchers_5']
 issues[name_columns] = issues[name_columns].replace(to_replace =r'([a-z]*.*[a-z]*)', value=r'\1@torc.ai', regex=True)
@@ -54,7 +50,9 @@ if debug:
     print(issues.Assignee)
     #print(issues)
 
-# Restore Watchers and Comments
+# Restore Watchers and Comment
+issues.rename(columns={'Watchers1':'Watchers', 'Watchers2':'Watchers', 'Watchers3':'Watchers', 'Watchers4':'Watchers'}, inplace=True)
+issues.rename(columns={'Comment1':'Comment', 'Comment2':'Comment', 'Comment3':'Comment', 'Comment4':'Comment', 'Comment5':'Comment', 'Comment6':'Comment', 'Comment7':'Comment', 'Comment8':'Comment', 'Comment9':'Comment', 'Comment10':'Comment'}, inplace=True)
 
 
 
