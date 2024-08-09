@@ -1,6 +1,7 @@
 import csv
 import requests
 from requests.auth import HTTPBasicAuth
+from datetime import datetime
 
 # Replace these with your Bitbucket credentials
 BITBUCKET_USERNAME = 'your_username'
@@ -33,8 +34,8 @@ def get_repository_permissions(repo_slug):
     response.raise_for_status()
     return response.json()['values']
 
-def create_structure():
-    structure = []
+def create_bitbucketdata():
+    bitbucketdata = []
 
     projects = get_projects()
 
@@ -54,17 +55,21 @@ def create_structure():
             # Get repository permissions
             repo_permissions = get_repository_permissions(repo_slug)
             
-            # Add project and repository details to structure
-            structure.append({
+            # Add project and repository details to bitbucketdata
+            bitbucketdata.append({
                 'project_name': project_name,
                 'repo_name': repo_name,
                 'project_permissions': project_permissions,
                 'repo_permissions': repo_permissions
             })
 
-    return structure
+    return bitbucketdata
 
-def write_to_csv(data, filename='bitbucket_structure.csv'):
+def write_to_csv(data):
+    # Get today's date in YYYYMMDD format
+    date_stamp = datetime.today().strftime('%Y%m%d')
+    filename = f'bitbucket_access_audit_{date_stamp}.csv'
+
     with open(filename, mode='w', newline='') as file:
         writer = csv.writer(file)
         
@@ -91,6 +96,6 @@ def write_to_csv(data, filename='bitbucket_structure.csv'):
                 writer.writerow([project_name, repo_name, user_or_group, permission_level, scope])
 
 if __name__ == '__main__':
-    bitbucket_structure = create_structure()
-    write_to_csv(bitbucket_structure)
+    bitbucketdata = create_bitbucketdata()
+    write_to_csv(bitbucketdata)
     print("CSV file created successfully.")
